@@ -1,11 +1,16 @@
 (defpackage cl-salesforce-bulk.connection
-  (:use :cl))
+  (:use :cl)
+  (:export :<salesforce-connection>
+           :login
+           :post-data))
 (in-package :cl-salesforce-bulk.connection)
 
-(defparameter *LOGIN-HOST* "https://login.salesforce.com"
+(defparameter +LOGIN-HOST+ "https://login.salesforce.com"
   "login host for production mode" )
-(defparameter *LOGIN-HOST-SANDBOX* "http://test.salesforce.com"
+(defparameter +LOGIN-HOST-SANDBOX+ "http://test.salesforce.com"
   "login host for sandbox mode")
+(defparameter +PATH-PREFIX+ "/services/async"
+  "common prefix for accessing salesforce async api")
 
 (defclass <salesforce-connection> ()
   ((session-id :initarg :session-id
@@ -22,7 +27,7 @@
                   :initform NIL)))
 
 (defun login (username password api-version &key (sandbox-mode nil))
-    (let*  ((login-host (if sandbox-mode *LOGIN-HOST-SANDBOX* *LOGIN-HOST*))
+    (let*  ((login-host (if sandbox-mode +LOGIN-HOST-SANDBOX+ +LOGIN-HOST+))
             (path (format NIL "~A/services/Soap/u/~A" login-host api-version))
             (soap-message (format NIL "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <env:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
@@ -55,3 +60,33 @@
       (ppcre:scan-to-strings "//([a-zA-Z0-9\-\.]{2,}).salesforce" server-url)
     (declare (ignore a))
     (aref b 0)))
+
+
+(defmethod post-data ((connection <salesforce-connection>) path data headers)
+  "post data to salesforce
+
+connection -- salesforce-connection
+path -- api path
+data -- data
+headers -- additional headers
+
+example: create a job
+(post-xml connection \"job\" \"<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<jobInfo
+   xmlns=\"http://www.force.com/2009/06/asyncapi/dataload\">
+ <operation>insert</operation>
+ <object>Account</object>
+ <contentType>CSV</contentType>
+</jobInfo>\" '((\"Content-Type\" . \"text/xml; charset=utf-8\")))
+"
+  (let ((uri (gen-uri connection path))
+        (headers (concatenate 'list headers `(("X-SFDC-Session" . ,(session-id connection))))))
+    (dex:post uri
+              :headers headers
+              :content data)))
+
+(defmethod gen-uri ((connection <salesforce-connection>) path)
+  (format NIL "https://~A/~A/~A/~A" (instance-host connection) +PATH-PREFIX+ (api-version connection) path))
+
+
+

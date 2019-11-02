@@ -9,7 +9,8 @@
   :components ((:module "src"
                 :components
                 ((:file "main")
-                 (:file "connection"))))
+                 (:file "connection")
+                 (:file "job" :depends-on ("connection")))))
   :description "salesforce bulk api client"
   :in-order-to ((test-op (test-op "cl-salesforce-bulk/tests"))))
 

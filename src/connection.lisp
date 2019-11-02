@@ -50,3 +50,8 @@
                          :api-version api-version
                          :instance-host instance-host)))))
 
+(defun parse-instance (server-url)
+  (multiple-value-bind (a b)
+      (ppcre:scan-to-strings "//([a-zA-Z0-9\-\.]{2,}).salesforce" server-url)
+    (declare (ignore a))
+    (aref b 0)))

@@ -7,9 +7,9 @@
 
 (defparameter +LOGIN-HOST+ "https://login.salesforce.com"
   "login host for production mode" )
-(defparameter +LOGIN-HOST-SANDBOX+ "http://test.salesforce.com"
+(defparameter +LOGIN-HOST-SANDBOX+ "https://test.salesforce.com"
   "login host for sandbox mode")
-(defparameter +PATH-PREFIX+ "/services/async"
+(defparameter +PATH-PREFIX+ "services/async"
   "common prefix for accessing salesforce async api")
 
 (defclass <salesforce-connection> ()

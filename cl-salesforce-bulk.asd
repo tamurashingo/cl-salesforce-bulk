@@ -18,9 +18,11 @@
   :author "tamura shingo"
   :license "MIT"
   :depends-on ("cl-salesforce-bulk"
+               "mockingbird"
                "rove")
   :components ((:module "tests"
                 :components
-                ((:file "main"))))
+                ((:file "main")
+                 (:file "connection"))))
   :description "Test system for cl-salesforce-bulk"
   :perform (test-op (op c) (symbol-call :rove :run c)))

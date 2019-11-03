@@ -6,7 +6,7 @@
 (in-package :cl-salesforce-bulk/tests/connection)
 
 
-
+;; https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/asynch_api_quickstart_login.htm
 (deftest login
   (testing "cheking request uri and response"
     (with-dynamic-stubs ((dex:post "<?xml version=\"1.0\" encoding=\"UTF-8\"?>

@@ -5,6 +5,7 @@
         :rove))
 (in-package :cl-salesforce-bulk/tests/job)
 
+;; https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/asynch_api_quickstart_create_job.htm
 (deftest create-job
   (testing "without external-id-field"
     (with-dynamic-stubs ((dex:post "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -98,6 +99,7 @@
 </jobInfo>"
                      (getf (cdr params) :content)))))))
 
+;; https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/asynch_api_quickstart_add_batch.htm
 (deftest add-batch
   (testing "add csv"
     (with-dynamic-stubs ((dex:post "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -131,6 +133,38 @@
                    (assoc "Content-Type" (getf (cdr params) :headers) :test #'string=)))
         (ok (string= "header1,header2\ndata1,data2"
                      (getf (cdr params) :content)))))))
+
+
+;; https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/asynch_api_quickstart_close_job.htm
+(deftest close-job
+  (testing "close the job"
+    (with-dynamic-stubs ((dex:post "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<jobInfo xmlns=\"http://www.force.com/2009/06/asyncapi/dataload\">
+  <state>Closed</state>
+</jobInfo>"))
+      (let* ((connection (make-instance 'cl-salesforce-bulk.connection:<salesforce-connection>
+                                        :session-id "session-id"
+                                        :api-version "39.0"
+                                        :instance-host "api.salesforce.com"))
+             (job (make-instance 'cl-salesforce-bulk.job:<salesforce-job>
+                                 :connection connection
+                                 :job-id "750x0000000005LAAQ"))
+             (result (cl-salesforce-bulk.job:close-job job))
+             (params (nth-mock-args-for 1 'dex:post)))
+        (declare (ignore result))
+        (ok (string= "https://api.salesforce.com/services/async/39.0/job/750x0000000005LAAQ" (car params)))
+        (ok (equal '("X-SFDC-Session" . "session-id")
+                   (assoc "X-SFDC-Session" (getf (cdr params) :headers) :test #'string=)))
+        (ok (equal '("Content-Type" . "text/xml; charset=UTF-8")
+                   (assoc "Content-Type" (getf (cdr params) :headers) :test #'string=)))))))
+
+
+
+
+
+
+
+
 
 
 

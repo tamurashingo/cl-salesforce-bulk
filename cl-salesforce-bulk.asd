@@ -23,6 +23,7 @@
   :components ((:module "tests"
                 :components
                 ((:file "main")
-                 (:file "connection"))))
+                 (:file "connection")
+                 (:file "job"))))
   :description "Test system for cl-salesforce-bulk"
   :perform (test-op (op c) (symbol-call :rove :run c)))

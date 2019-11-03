@@ -3,7 +3,7 @@
   (:import-from :cl-salesforce-bulk.connection
                 :<salesforce-connection>
                 :post-data)
-  (:export :<salesforce-batch>
+  (:export :<salesforce-job>
            :create-job
            :add-batch
            :close-job))

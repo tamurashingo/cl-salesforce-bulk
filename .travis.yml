@@ -1,19 +1,17 @@
 language: common-lisp
 sudo: false
-
 env:
   global:
-    - PATH=$HOME/.roswell/bin:$PATH
-    - ROSWELL_INSTALL_DIR=$HOME/.roswell
+  - PATH=$HOME/.roswell/bin:$PATH
+  - ROSWELL_INSTALL_DIR=$HOME/.roswell
+  - secure: WWrjaRNiEtvQNwp6Ax7wQXB6+h5UhOhU7mSsWN0jnFbgOvWyRMI05wzozGsS6J8L7hyokv4efBSTlXNslDrHur5GGvGclP3Wq80r4G6PFcGNCKGtAgbrSHY+t94H1Gz1Tm5BMxkPG4C0zDzS7X8FtKCdPUzIi82xFh4sXEEj4giIqoYQQr6oJkTj2GjW7wuZQqSLgbXqAJig53lw0c8JW5kovHLKx8ucicloj91PcrDL+eC5PFh1GH+tvxH8RsJ4Xl6xTi5rpOGAjgvHS/3iiRpEVmtwn47KI7mYt8YV58ZnWuvYTorJIMRi7VlA5GFFrHfXrQvqycbhQiLSXZ09zIWtEyAJil5PjgGma1oCh1cdYMRQrJo2F4HVj0Jn9mcEo7pKGL1oJyXheQ9lkqgzl6TIJXeYJ1fvAvk1XnLGVC7qp3IHBCJpjdAw/dBoMopaxVn5HGQSvTyL/6SdnHMyMJ1HjFOFZdZ2SWN8q9bkI/vaj2fqGg+Xy9yPHdQ/g6cgQvqeKF1V8XPwstFkjgIcg9VJrjKZ1XXcmt8LJoE4gY+iFprt8LFeWon1CLCDSfE3q6F0N5F/kPGW6uTb8bYNK7ce2w75gZyKOFqCLzUdEHlOs7eBdgXp5kFlQu7JxWEs336EEJu2x8Hv3ySEbWxIN7YFtOZhp3QW6Kp8Raf+P/U=
+  - secure: qZ6/xTLelAmYevayH6LL5SzXipUTHs8gP0RJneCcM6DxIfn/odKUa3POLbjjVyTjwiu9Ba51yHfQtoVq9IWVGk+2TffuUG+PGpUZdLvBuM49AdfSQ9+zgMm5icAihnBoALyiX4j7wHT95TPSA3Op2GFAfDNfJK1oBlglU79GsYCacbf8PVIP82pkdLkB+S1Fzm9EJLlCqcwqI0cs0f30LreGH6J0O0QvAUGt5+E6iJ7TgWbt3YAIHEREK5WcR/cEvEyJroMJBQ3pLzyFAwKkLleilKPqNOEWjThyd5t5LLav6629cUw0d7n9R6B6H1odpzdLIvM+LDwER7TkVzt/H9RuZDhF5pf9lsH+SwNunf7+EnyicjkVcNC5ghQYseLSgmIc7/OCldqoSA9Wz6q527VQZxvyWOW1zV3HJYLNhHHo4epeaN/6FjcStP2Pl7HH/0x5A/8YomOkIG5kj0zJUX5fmWjHMsx0+C41kfZ8hq7hdLVD1gGiiCtwZd5nq6Dv/bzrTs1ZB9Fbe4SkyhZSUY9g4w97uVDtkBNDAzcUCGILEkTVafiq0aFyJnEzJ4+2ptmic2BKnq5afdi90OqCZijWkqcK2t6K9h0m5IaRejh9jaq/f/XZFBVDQaRSgn879UmWIkZDGEXT1r6dmOpctKpiWv1oi8f+e+eGg3b+opA=
   matrix:
-    - LISP=sbcl-bin
-    - LISP=ccl-bin
-
+  - LISP=sbcl-bin
+  - LISP=ccl-bin
 install:
-  # Install Roswell
-  - curl -L https://raw.githubusercontent.com/roswell/roswell/release/scripts/install-for-ci.sh | sh
-  - ros install fukamachi/rove
-
+- curl -L https://raw.githubusercontent.com/roswell/roswell/release/scripts/install-for-ci.sh
+  | sh
+- ros install fukamachi/rove
 script:
-  - rove cl-salesforce-bulk.asd
-
+- rove cl-salesforce-bulk.asd

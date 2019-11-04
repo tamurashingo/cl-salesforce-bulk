@@ -6,7 +6,8 @@
   (:export :<salesforce-job>
            :create-job
            :add-batch
-           :close-job))
+           :close-job
+           :job-id))
 (in-package :cl-salesforce-bulk.job)
 
 (defparameter +OPEN-JOB-XML/EXTERNAL-ID+
@@ -51,14 +52,13 @@ connection -- salesforce-connection
 operation -- delete, insert, query(Bulk V1 type jobs only), queryall(Bulk V1 type jobs only), upsert, update, hardDelete(Bulk V1 type jobs only)
 object -- tartget object (e.g. Account)
 external-id-field-name -- The name of the external ID field for an upsert"
-
   (let* ((data (if external-id-field-name
                    (format NIL +OPEN-JOB-XML/EXTERNAL-ID+ operation object external-id-field-name)
                    (format NIL +OPEN-JOB-XML+ operation object)))
          (result (post-data connection "job" data '(("Content-Type" . "text/xml; charset=UTF-8"))))
          (xml (cxml:parse result (cxml-dom:make-dom-builder)))
          (job-id (xpath:with-namespaces (("" "http://www.force.com/2009/06/asyncapi/dataload"))
-                     (xpath:string-value (xpath:evaluate "/jobInfo/id" xml)))))
+                   (xpath:string-value (xpath:evaluate "/jobInfo/id" xml)))))
     (make-instance '<salesforce-job>
                    :connection connection
                    :job-id job-id)))

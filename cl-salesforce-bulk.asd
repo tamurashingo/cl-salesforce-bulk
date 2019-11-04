@@ -10,7 +10,8 @@
                 :components
                 ((:file "main")
                  (:file "connection")
-                 (:file "job" :depends-on ("connection")))))
+                 (:file "job" :depends-on ("connection"))
+                 (:file "api" :depends-on ("job")))))
   :description "salesforce bulk api client"
   :in-order-to ((test-op (test-op "cl-salesforce-bulk/tests"))))
 
@@ -19,11 +20,13 @@
   :license "MIT"
   :depends-on ("cl-salesforce-bulk"
                "mockingbird"
-               "rove")
+               "rove"
+               "uiop")
   :components ((:module "tests"
                 :components
                 ((:file "main")
                  (:file "connection")
-                 (:file "job"))))
+                 (:file "job")
+                 (:file "api"))))
   :description "Test system for cl-salesforce-bulk"
   :perform (test-op (op c) (symbol-call :rove :run c)))

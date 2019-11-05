@@ -161,9 +161,24 @@
 
 
 
-
-
-
+(deftest get-batch-status
+  (testing ""
+    (with-dynamic-stubs ((dex:get "<result-list xmlns=\"http://www.force.com/2009/06/asyncapi/dataload\"><result>7526F00000Ds1XC</result></result-list>"))
+      (let* ((connection (make-instance 'cl-salesforce-bulk.connection:<salesforce-connection>
+                                        :session-id "session-id"
+                                        :api-version "39.0"
+                                        :instance-host "api.salesforce.com"))
+             (job (make-instance 'cl-salesforce-bulk.job:<salesforce-job>
+                                 :connection connection
+                                 :job-id "750x0000000005LAAQ"))
+             (result (cl-salesforce-bulk.job:get-batch-status job "batch-id"))
+             (params (nth-mock-args-for 1 'dex:get)))
+        (ok (string= "7526F00000Ds1XC" batch))
+        (ok (string= "https://api.salesforce.com/services/async/39.0/job/750x0000000005LAAQ/batch/" (car params)))
+        (ok (equal '("X-SFDC-Session" . "session-id")
+                   (assoc "X-SFDC-Session" (getf (cdr params) :headers) :test #'string=)))
+        (ok (equal '("Content-Type" . "text/xml; charset=UTF-8")
+                   (assoc "Content-Type" (getf (cdr params) :headers) :test #'string=)))))))
 
 
 

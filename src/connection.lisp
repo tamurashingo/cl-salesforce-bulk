@@ -85,6 +85,18 @@ example: create a job
               :headers headers
               :content data)))
 
+(defmethod get-data ((connection <salesforce-connection>) path headers)
+  "get to salesforce
+
+connection -- salesforce-connection
+path -- api path
+headers -- additional headers
+"
+  (let ((uri (gen-uri connection path))
+        (headers (concatenate 'list headers `(("X-SFDC-Session" . ,(session-id connection))))))
+    (dex:get uri
+             :headers headers)))
+
 (defmethod gen-uri ((connection <salesforce-connection>) path)
   (format NIL "https://~A/~A/~A/~A" (instance-host connection) +PATH-PREFIX+ (api-version connection) path))
 

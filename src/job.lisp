@@ -72,7 +72,7 @@ arguments:
 job -- salesforece-job
 csv -- csv data
 "
-  (let* ((path (format NIL "job/~a/batch" (job-id job)))
+  (let* ((path (format NIL "job/~A/batch" (job-id job)))
          (result (post-data (connection job) path csv '(("Content-Type" . "text/csv; charset=UTF-8"))))
          (xml (cxml:parse result (cxml-dom:make-dom-builder))))
     (xpath:with-namespaces (("" "http://www.force.com/2009/06/asyncapi/dataload"))
@@ -82,4 +82,18 @@ csv -- csv data
   "close the job"
   (let ((path (format NIL "job/~a" (job-id job))))
     (post-data (connection job) path +CLOSE-JOB-XML+ '(("Content-Type" . "text/xml; charset=UTF-8")))))
+
+
+(defmethod get-batch-staus ((job <salesforce-job>) batch-id)
+  (let* ((path (format NIL "job/~A/batch/~A" (job-id job) batch-id))
+         (resutl (get-data (connection job) path)))))
+
+(defmethod get-batch-result-id  ((job <salesforce-job>) batch-id)
+  (let* ((path (format NIL "job/~A/batch/~A/result" (job-id job) batch-id))
+         (resutl (get-data (connection job) path)))))
+
+
+(defmethod get-batch-result  ((job <salesforce-job>) batch-id result-id)
+  (let* ((path (format NIL "job/~A/batch/~A/result/~A" (job-id job) batch-id result-id))
+         (resutl (get-data (connection job) path)))))
 

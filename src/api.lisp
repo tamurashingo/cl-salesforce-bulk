@@ -30,12 +30,15 @@
   "update records"
   (operation connection "update" object csv))
 
-(defmethod operation ((connection <salesforce-connection>) operation object csv &key (external-id-field-name nil))
-  (let ((job (create-job connection operation object :external-id-field-name external-id-field-name)))
-    (add-batch job csv)
-    (close-job job)
-    (job-id job)))
+(defmethod bulk/query ((connection <salesforce-connection>) object query)
+  "query records"
+  (operation connection "query" object query))
 
-(defmethod bulk/query ((connection <salesforce-connection>) operation object query)
-  nil)
+(defmethod operation ((connection <salesforce-connection>) operation object csv &key (external-id-field-name nil))
+  (let* ((job (create-job connection operation object :external-id-field-name external-id-field-name))
+         ((batch-id add-batch job csv)))
+    (close-job job)
+    (when (string= operation "query")
+      (get-batch-status job batch-id
+    (job-id job)))
 
